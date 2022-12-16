@@ -62,7 +62,7 @@ function updateF4() {
 	}
 }
 
-function mandelbrot(size=100) {
+function mandelbrot(size=300) {
 	function sortPos(a, b) {
 		let s = size/2
 		return (b[0] + s - W/2)**2 + (b[1] + s - H/2)**2 - (a[0] + s - W/2)**2 - (a[1] + s - H/2)**2
@@ -72,7 +72,7 @@ function mandelbrot(size=100) {
 	let allPos = [];
 	for (let x = 0; x < W; x += size) {
 		for (let y = 0; y < H; y += size) {
-			allPos.push([x, y, Math.min(x+size, W), Math.min(y+size, H)]);
+			allPos.push([x, y, Math.min(x+size, parseInt(W)), Math.min(y+size, parseInt(H))]);
 		}
 	}
 	allPos.sort(sortPos);
@@ -80,35 +80,42 @@ function mandelbrot(size=100) {
 }
 
 function mandelbrotSlice(allPos) {
-	if (allPos == []) {
+	if (allPos.length == 0) {
 		return;
 	}
 	currentPos = allPos.pop(0);
+	let w = currentPos[2]-currentPos[0];
+	let h = currentPos[3]-currentPos[1];
+	let data = new Uint8ClampedArray(4*w*h);
 	let z, c, n, q, r, b;
-	for (let x = currentPos[0]; x < currentPos[2]; x ++) {
-		for (let y = currentPos[1]; y < currentPos[3]; y ++) {
+	let index = 0;
+	for (let y = currentPos[1]; y < currentPos[3]; y ++) {
+		for (let x = currentPos[0]; x < currentPos[2]; x ++) {
 			c = new Complex((x - W/2)/zoom, (H/2 - y)/zoom).add(pos);
 			z = new Complex(c.re, c.im);
-			if (abs(z) > 2) {
-				canvas.fillStyle = "black";
-			} else {
+			data[index+3] = 255; // non-transparent pixel
+			if (abs(z) <= 2) {
 				n = 1;
 				while ((abs(z) <= 2) && (n < N)) {
 					z.sqr().add(c);
 					n += 1;
 				}
-				if (n == N) {
-					canvas.fillStyle = "black";
-				} else {
+				if (n < N) {
 					let q = n/N;
 					let r = x*255/W;
 					let b = 255 - (y*255/H);
-					canvas.fillStyle = "rgb(R, G, B)".replaceAll("R", r*q).replaceAll("G", (255-r)*q).replaceAll("B", b*q);
+					data[index] = r*q;
+					data[index+1] = (255-r)*q;
+					data[index+2] = b*q;
 				}
 			}
-			canvas.fillRect(x, y, 1, 1);
+			index += 4;
 		}
 	}
+	if (allPos.length == 4598) {
+		console.log(data);
+	}
+	canvas.putImageData(new ImageData(data, w, h), currentPos[0], currentPos[1]);
 	window.setTimeout(() => {mandelbrotSlice(allPos)}, 0);
 }
 
