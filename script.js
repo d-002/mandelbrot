@@ -76,14 +76,12 @@ function mandelbrot(size=300) {
 		}
 	}
 	allPos.sort(sortPos);
-	window.setTimeout(() => {mandelbrotSlice(allPos)}, 0);
+	for (let i = 0; i < allPos.length; i++) {
+		window.setTimeout(() => {mandelbrotSlice(allPos[i])}, 0);
+	}
 }
 
-function mandelbrotSlice(allPos) {
-	if (allPos.length == 0) {
-		return;
-	}
-	currentPos = allPos.pop(0);
+function mandelbrotSlice(currentPos) {
 	let w = currentPos[2]-currentPos[0];
 	let h = currentPos[3]-currentPos[1];
 	let data = new Uint8ClampedArray(4*w*h);
@@ -112,11 +110,7 @@ function mandelbrotSlice(allPos) {
 			index += 4;
 		}
 	}
-	if (allPos.length == 4598) {
-		console.log(data);
-	}
 	canvas.putImageData(new ImageData(data, w, h), currentPos[0], currentPos[1]);
-	window.setTimeout(() => {mandelbrotSlice(allPos)}, 0);
 }
 
 function onpress(e) {
