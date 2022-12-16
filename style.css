@@ -29,7 +29,16 @@ div div {
 }
 
 #div-F4 {
+	transition: transform 0.3s ease-out;
     position: absolute;
     background-color: rgba(0, 0, 0, 0.5);
     border: 5px solid rgba(0, 0, 0, 0.8);
+}
+
+.showed {
+	transform: translateY(0);
+}
+
+.hidden {
+	transform: translateY(-100%);
 }

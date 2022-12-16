@@ -155,9 +155,9 @@ function onpress(e) {
 	} else if (e.key == "F4") {
 		F4 = !F4;
 		if (F4) {
-			divF4.style.display = "block";
+			divF4.className = "showed";
 		} else {
-			divF4.style.display = "none";
+			divF4.className = "hidden";
 		}
 	}
 	if (redraw) {
