@@ -8,6 +8,7 @@ html, body {
 
 h3 {
 	font-size: 10px;
+	text-decoration: underline;
 }
 
 p {
@@ -17,6 +18,7 @@ p {
 strong {
 	font-weight: bold;
 	font-size: 14px;
+	color: #cfc;
 }
 
 canvas {
@@ -32,7 +34,9 @@ div div {
 	transition: transform 0.3s ease-out;
     position: absolute;
     background-color: rgba(0, 0, 0, 0.5);
-    border: 5px solid rgba(0, 0, 0, 0.8);
+    border: 5px solid black;
+	border-top: none;
+	border-left: none;
 }
 
 .showed {

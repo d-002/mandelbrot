@@ -58,7 +58,7 @@ function updateF4() {
 	let comments = ["Pos: ", "Zoom: ", "Iterations: ", "Resolution: "];
 	let info = [pos.re + " + " + pos.im + "i", zoom, N, "(" + parseInt(W/precision) + ", " + parseInt(H/precision) + ")"];
 	for (let i = 0; i < elts.length; i++) {
-		elts[i].innerHTML = comments[i] + info[i];
+		elts[i].innerHTML = "<strong>" + comments[i] + "</strong>" + info[i];
 	}
 }
 
@@ -175,7 +175,7 @@ function onpress(e) {
 
 let canvas, divF4;
 let W, H;
-let precision = 5; // pixels
+let precision = 2; // pixels
 let redraw = true;
 let F4 = true;
 
