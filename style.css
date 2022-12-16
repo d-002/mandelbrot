@@ -1,0 +1,35 @@
+html, body {
+	margin: 0;
+	padding: 0;
+	color: #fff;
+    font-family: consolas;
+    line-height: 10px;
+}
+
+h3 {
+	font-size: 10px;
+}
+
+p {
+    font-size: 12px;
+}
+
+strong {
+	font-weight: bold;
+	font-size: 14px;
+}
+
+canvas {
+	width: 100%;
+	height: 100%;
+}
+
+div div {
+    padding: 5px;
+}
+
+#div-F4 {
+    position: absolute;
+    background-color: rgba(0, 0, 0, 0.5);
+    border: 5px solid rgba(0, 0, 0, 0.8);
+}
