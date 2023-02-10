@@ -1,6 +1,8 @@
 # mandelbrot
 Javascript Mandelbrot set visualization where you can move around and zoom in and out
 
+Try it out: https://d-002.github.io/mandelbrot
+
 ## Controls
 
 **zqsd** (sorry qwerty users): move
