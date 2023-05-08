@@ -1,14 +1,15 @@
 html, body {
 	margin: 0;
 	padding: 0;
-	color: #fff;
+	color: #ccc;
     font-family: consolas;
     line-height: 10px;
 }
 
-h3 {
-	font-size: 10px;
-	text-decoration: underline;
+h1 {
+	font-size: 30px;
+	padding-bottom: 10px;
+	border-bottom: 1px solid #777;
 }
 
 p {
@@ -18,12 +19,13 @@ p {
 strong {
 	font-weight: bold;
 	font-size: 14px;
-	color: #cfc;
+	color: #7ca;
 }
 
 canvas {
 	width: 100%;
 	height: 100%;
+	background-color: #222;
 }
 
 div div {
@@ -33,10 +35,10 @@ div div {
 #div-F4 {
 	transition: transform 0.3s ease-out;
     position: absolute;
-    background-color: rgba(0, 0, 0, 0.5);
-    border: 5px solid black;
-	border-top: none;
-	border-left: none;
+    background-color: rgba(0, 0, 0, 0.7);
+	box-shadow: 0 0 20px black;
+	padding: 20px;
+	border-radius: 0 0 20px 0;
 }
 
 .showed {
@@ -44,5 +46,5 @@ div div {
 }
 
 .hidden {
-	transform: translateY(-100%);
+	transform: translateY(-120%);
 }
