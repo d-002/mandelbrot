@@ -54,9 +54,17 @@ function updatePrecision() {
 }
 
 function updateF4() {
+	let anti;
+	if (antialias == 1) {
+		anti = "No antialiasing";
+	} else {
+		anti = "" + antialias + "x";
+	}
+
 	let elts = divF4.children[1].getElementsByTagName("p");
-	let comments = ["Pos: ", "Zoom: ", "Iterations: ", "Resolution: "];
-	let info = [pos.re + " + " + pos.im + "i", zoom, N, "(" + parseInt(W/precision) + ", " + parseInt(H/precision) + ")"];
+	let comments = ["Pos: ", "Zoom: ", "Iterations: ", "Resolution: ", "Antialiasing: "];
+	let info = [pos.re + " + " + pos.im + "i", zoom, N, "(" + parseInt(W/precision) + ", " + parseInt(H/precision) + ")", anti];
+
 	for (let i = 0; i < elts.length; i++) {
 		elts[i].innerHTML = "<strong>" + comments[i] + "</strong>" + info[i];
 	}
@@ -76,41 +84,61 @@ function mandelbrot(size=300) {
 		}
 	}
 	allPos.sort(sortPos);
-	for (let i = 0; i < allPos.length; i++) {
-		window.setTimeout(() => {mandelbrotSlice(allPos[i])}, 0);
-	}
+	window.setTimeout(() => {mandelbrotSlice(allPos)}, 0);
 }
 
-function mandelbrotSlice(currentPos) {
+function mandelbrotSlice(allPos) {
+	if (allPos.length == 0) {
+		return;
+	}
+	currentPos = allPos.pop(0);
 	let w = currentPos[2]-currentPos[0];
 	let h = currentPos[3]-currentPos[1];
 	let data = new Uint8ClampedArray(4*w*h);
-	let z, c, n, q, r, b;
+	let z, c, n, total, bright, r, b;
 	let index = 0;
+
 	for (let y = currentPos[1]; y < currentPos[3]; y ++) {
 		for (let x = currentPos[0]; x < currentPos[2]; x ++) {
-			c = new Complex((x - W/2)/zoom, (H/2 - y)/zoom).add(pos);
-			z = new Complex(c.re, c.im);
 			data[index+3] = 255; // non-transparent pixel
-			if (abs(z) <= 2) {
-				n = 1;
-				while ((abs(z) <= 2) && (n < N)) {
-					z.sqr().add(c);
-					n += 1;
+			total = 0;
+			bright = 0;
+			for (let dx = 0; dx < antialias; dx++) {
+				for (let dy = 0; dy < antialias; dy++) {
+					c = new Complex((x - W/2 + dx/antialias)/zoom, (H/2 - y - dy/antialias)/zoom).add(pos);
+					z = new Complex(c.re, c.im);
+					if (abs(z) <= 2) {
+						n = 1;
+						while ((abs(z) <= 2) && (n < N)) {
+							z.sqr().add(c);
+							n += 1;
+						}
+						if (n < N) {
+							total += n/N;
+						} else {
+							bright ++; // black fading near black mandelbrot set for antialiasing
+						}
+					}
 				}
-				if (n < N) {
-					let q = n/N;
-					let r = x*255/W;
-					let b = 255 - (y*255/H);
-					data[index] = r*q;
-					data[index+1] = (255-r)*q;
-					data[index+2] = b*q;
-				}
+			}
+			total /= antialias * antialias;
+			bright = 1 - bright/antialias/antialias;
+			if (total < 1) {
+				let r = x*255/W;
+				let b = 255 - (y*255/H);
+				data[index] = r*total*bright;
+				data[index+1] = (255-r)*total*bright;
+				data[index+2] = b*total*bright;
 			}
 			index += 4;
 		}
 	}
+
+	if (allPos.length == 4598) {
+		console.log(data);
+	}
 	canvas.putImageData(new ImageData(data, w, h), currentPos[0], currentPos[1]);
+	window.setTimeout(() => {mandelbrotSlice(allPos)}, 0);
 }
 
 function onpress(e) {
@@ -153,6 +181,13 @@ function onpress(e) {
 		precision += 1;
 		updatePrecision();
 		redraw = true;
+	} else if (e.key == "a") {
+		if (antialias == 8) {
+			antialias = 1;
+		} else {
+			antialias *= 2;
+		}
+		redraw = true;
 	} else if (e.key == "F4") {
 		F4 = !F4;
 		if (F4) {
@@ -172,6 +207,7 @@ let W, H;
 let precision = 2; // pixels
 let redraw = true;
 let F4 = true;
+let antialias = 1;
 
 //let N = 2000;
 //let pos = new Complex(0.268254503, 0.00362449166);
