@@ -1,9 +1,58 @@
 html, body {
 	margin: 0;
 	padding: 0;
+	--col1: #7ca;
+	--col2: #3fa67d;
+}
+
+::selection {
+	background-color: var(--col1);
+	color: black;
+}
+
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+html {
+	background-image: linear-gradient(90deg, #020, #200);
+}
+
+body, input {
 	color: #ccc;
     font-family: consolas;
+}
+
+body {
     line-height: 10px;
+	background-image: linear-gradient(180deg, rgba(0, 0, 255, .2), transparent);
+}
+
+canvas {
+	width: 100%;
+	height: 100%;
+}
+
+#F4 {
+	transition: transform 0.3s ease-out;
+    position: absolute;
+    background-color: rgba(0, 0, 0, 0.7);
+	box-shadow: 0 0 20px black;
+	padding: 25px;
+	border-radius: 0 0 20px 0;
+}
+
+.F4-showed {
+	transform: translateY(0);
+}
+
+.F4-hidden {
+	transform: translateY(-120%);
+}
+
+#F4>div {
+    padding: 5px;
 }
 
 h1 {
@@ -12,39 +61,94 @@ h1 {
 	border-bottom: 1px solid #777;
 }
 
-p {
+p, span {
     font-size: 12px;
 }
 
 strong {
 	font-weight: bold;
 	font-size: 14px;
-	color: #7ca;
+	color:  var(--col1);
 }
 
-canvas {
+#info br {
+	content: "";
+	display: block;
+	height: 14px;
+}
+
+input {
+	background-color: rgba(0, 0, 0, .5);
+	border: 1px solid var(--col2);
+	border-radius: 3px;
+}
+
+#info strong::after {
+	content: " ";
+}
+
+#real, #imag, #w, #h {
+	width: 100px;
+}
+
+#antialias {
+	display: flex;
+	position: relative;
+	width: fit-content;
+	margin: 10px;
+
+	border: 1px solid var(--col2);
+	border-radius: 5px;
+	background-color: black;
+}
+
+#antialias a {
+	transition: .3s;
+	font-size: 14px;
+	margin: 5px;
+	padding: 10px;
+	color: white;
+	text-decoration: none;
+	z-index: 1;
+}
+
+#slider {
+	transition: .5s;
+
+	position: absolute;
+	left: var(--left);
+	top: 0;
+
+	margin: 5px 0 0 5px;
+	width: var(--width);
+	height: 30px;
+
+	border-radius: 5px;
+	background-color: #ccc;
+}
+
+.button-container {
+	display: flex;
+}
+
+.button {
 	width: 100%;
-	height: 100%;
-	background-color: #222;
+	margin: 5px;
+	padding: 10px 5px;
+	border-radius: 5px;
+
+	text-decoration: none;
+	text-align: center;
+
+	background-color: #ccc;
+	color: black;
 }
 
-div div {
-    padding: 5px;
+.button:hover {
+	background-color: white;
 }
 
-#div-F4 {
-	transition: transform 0.3s ease-out;
-    position: absolute;
-    background-color: rgba(0, 0, 0, 0.7);
-	box-shadow: 0 0 20px black;
-	padding: 20px;
-	border-radius: 0 0 20px 0;
-}
-
-.showed {
-	transform: translateY(0);
-}
-
-.hidden {
-	transform: translateY(-120%);
+.hidden-text {
+	font-size: 0;
+	height: 0;
 }

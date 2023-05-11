@@ -23,11 +23,26 @@ class Complex {
 	}
 }
 
-function draw() {
-	updatePrecision();
-	divF4 = document.getElementById("div-F4");
+function init() {
+	divF4 = document.getElementById("F4");
 
+	infoElem = {};
+	let ids = ["real", "imag", "zoom", "iter", "w", "h", "antialias"];
+	for (let i = 0; i < ids.length; i++) {
+		infoElem[ids[i]] = document.getElementById(ids[i]);
+	}
+
+	draw();
+}
+
+function draw() {
+	// edit canvas and size according to precision
+	updatePrecision();
+
+	// fill in F4 menu
 	updateF4();
+	
+	// draw mandelbrot
 	mandelbrot();
 }
 
@@ -39,8 +54,8 @@ function updatePrecision() {
 	}
 
 	// create canvas with correct size
-	W = window.innerWidth/precision;
-	H = window.innerHeight/precision;
+	W = Math.max(window.innerWidth/precision, 1);
+	H = Math.max(window.innerHeight/precision, 1);
 	zoom = truezoom*W;
 
 	canvas = document.createElement("canvas");
@@ -61,13 +76,41 @@ function updateF4() {
 		anti = "" + antialias + "x";
 	}
 
-	let elts = divF4.children[1].getElementsByTagName("p");
-	let comments = ["Pos: ", "Zoom: ", "Iterations: ", "Resolution: ", "Antialiasing: "];
-	let info = [pos.re + " + " + pos.im + "i", zoom, N, "(" + parseInt(W/precision) + ", " + parseInt(H/precision) + ")", anti];
+	n = parseInt(Math.log10(zoom)); // change displayed pos precision depending on zoom
 
-	for (let i = 0; i < elts.length; i++) {
-		elts[i].innerHTML = "<strong>" + comments[i] + "</strong>" + info[i];
+	infoElem.real.value = pos.re.toFixed(n);
+	infoElem.imag.value = pos.im.toFixed(n);
+	infoElem.zoom.value = zoom;
+	infoElem.iter.value = N;
+	infoElem.w.value = parseInt(W);
+	infoElem.h.value = parseInt(H);
+	slideTo([1, 2, 4, 8].indexOf(antialias));
+}
+
+function slideTo(n) {
+	let offset = 0;
+	let children = infoElem.antialias.children;
+	let width;
+
+	// find the desired position and width of the selector
+	for (let i = 0; i <= n; i++) {
+		width = children[i+1].offsetWidth;
+		if (i < n) {
+			offset += width + 10;
+		}
 	}
+
+	// change the color of the tabs
+	for (let i = 1; i < children.length; i++) {
+		if (i == n+1) {
+			children[i].style = "color: black";
+		} else {
+			children[i].style = "";
+		}
+	}
+
+	children[0].style = "--left: " + offset + "; --width: " + width;
+	antialias = [1, 2, 4, 8][n];
 }
 
 function mandelbrot(size=300) {
@@ -97,6 +140,7 @@ function mandelbrotSlice(allPos) {
 	let data = new Uint8ClampedArray(4*w*h);
 	let z, c, n, total, bright, r, b;
 	let index = 0;
+	let a = antialias * antialias;
 
 	for (let y = currentPos[1]; y < currentPos[3]; y ++) {
 		for (let x = currentPos[0]; x < currentPos[2]; x ++) {
@@ -121,8 +165,8 @@ function mandelbrotSlice(allPos) {
 					}
 				}
 			}
-			total /= antialias * antialias;
-			bright = 1 - bright/antialias/antialias;
+			total /= a;
+			bright = 1 - bright/a;
 			if (total < 1) {
 				let r = x*255/W;
 				let b = 255 - (y*255/H);
@@ -134,14 +178,34 @@ function mandelbrotSlice(allPos) {
 		}
 	}
 
-	if (allPos.length == 4598) {
-		console.log(data);
-	}
 	canvas.putImageData(new ImageData(data, w, h), currentPos[0], currentPos[1]);
 	window.setTimeout(() => {mandelbrotSlice(allPos)}, 0);
 }
 
+function apply() {
+	// paste manually set settings into variables and redraw
+
+	pos = new Complex(parseFloat(infoElem.real.value), parseFloat(infoElem.imag.value));
+	truezoom = parseInt(infoElem.zoom.value)/W;
+	trueN = N = parseInt(infoElem.iter.value);
+
+	// set up precision depending on set resolution
+	let w = parseInt(infoElem.w.value);
+	let h = parseInt(infoElem.h.value);
+	precision = Math.max(parseInt((window.innerWidth/w + window.innerHeight/h) / 2), 1);
+	if (isNaN(precision)) {
+		precision = 100;
+	}
+
+	draw();
+}
+
 function onpress(e) {
+	let node = window.getSelection().anchorNode;
+	if (node != null && node.textContent != "canvas selected") {
+			return; // don't move if in an input box
+	}
+
 	let movement = 10/zoom;
 	if (e.key == "q") {
 		pos.re -= movement;
@@ -191,9 +255,9 @@ function onpress(e) {
 	} else if (e.key == "F4") {
 		F4 = !F4;
 		if (F4) {
-			divF4.className = "showed";
+			divF4.className = "F4-showed";
 		} else {
-			divF4.className = "hidden";
+			divF4.className = "F4-hidden";
 		}
 	}
 	if (redraw) {
@@ -202,7 +266,7 @@ function onpress(e) {
 	}
 }
 
-let canvas, divF4;
+let canvas, divF4, infoElem;
 let W, H;
 let precision = 2; // pixels
 let redraw = true;

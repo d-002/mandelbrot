@@ -5,24 +5,59 @@
 		<link rel="stylesheet" href="style.css">
 	</head>
 	
-	<body onload="javascript:draw();">
-		<div id="div-F4" class="showed">
+	<body onload="javascript:init();">
+		<div id="F4" class="F4-showed">
 			<div>
 				<h1>Controls</h1>
 				<p><strong>zqsd</strong>: move</p>
-				<p><strong>up/down arrows</strong>: change zoom</p>
-				<p><strong>right/left arrows</strong>: change number of iterations</p>
+				<p><strong>up</strong>/<strong>down arrows</strong>: change zoom</p>
+				<p><strong>right</strong>/<strong>left arrows</strong>: change number of iterations</p>
 				<p><strong>+</strong>/<strong>-</strong>: change resolution</p>
 				<p><strong>a</strong>: anti-aliasing settings</p>
-				<p><strong>F4</strong>: show this menu</p>
+				<p><strong>F4</strong>: show/hide this menu</p>
 			</div>
-			<div>
+			<div id="info">
 				<h1>Information</h1>
-				<p></p>
-				<p></p>
-				<p></p>
-				<p></p>
-				<p></p>
+				<p>Edit the inputs then hit Apply</p>
+
+				<strong>Pos:</strong>
+				<input type="number" id="real"></input>
+				<span>+</span>
+				<input type="number" id="imag">
+				</input>
+				<span>i</span>
+				<br>
+
+				<strong>Zoom:</strong>
+				<input type="number" id="zoom"></input>
+				<br>
+
+				<strong>Iterations:</strong>
+				<input type="number" id="iter"></input>
+				<br>
+
+				<strong>Resolution:</strong>
+				<span>(</span>
+				<input type="number" id="w"></input>
+				<span>,</span>
+				<input type="number" id="h"></input>
+				<span>)</span>
+				<br>
+
+				<strong>Antialiasing:</strong>
+				<div id="antialias">
+					<div id="slider"></div>
+					<a href="javascript:slideTo(0)">None</a>
+					<a href="javascript:slideTo(1)">2x</a>
+					<a href="javascript:slideTo(2)">4x</a>
+					<a href="javascript:slideTo(3)">8x</a>
+				</div>
+
+				<div class="button-container">
+					<a class="button" href="javascript:apply()">Apply</a>
+					<a class="button" href="">Reset all</a>
+				</div>
+				<p class="hidden-text">canvas selected</p>
 			</div>
 		</div>
 	</body>
