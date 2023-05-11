@@ -19,7 +19,4 @@ Try it out: https://d-002.github.io/mandelbrot
 
 ## Upcoming (hopefully)
 
-- Smooth colors
-- Copy position and zoom to clipboard
-- Type in custom position, zoom, iterations, resolution
 - Qwerty keyboard support
