@@ -37,7 +37,7 @@ function init() {
 
 function draw() {
 	// edit canvas and size according to precision
-	updatePrecision();
+	updateResolution();
 
 	// fill in F4 menu
 	updateF4();
@@ -46,16 +46,24 @@ function draw() {
 	mandelbrot();
 }
 
-function updatePrecision() {
+function updateResolution() {
+	// make a canvas from (W, H)
+
 	// if existing canvas, delete it
 	let existing = document.getElementById("canvas");
 	if (existing != undefined) {
 		existing.remove();
 	}
 
-	// create canvas with correct size
-	W = Math.max(window.innerWidth/precision, 1);
-	H = Math.max(window.innerHeight/precision, 1);
+	// fix ratio using last modified between W and H
+	if (existing == undefined || W != existing.width) {
+		H = W*window.innerHeight/window.innerWidth;
+	} else {
+		W = H*window.innerWidth/window.innerHeight;
+	}
+	// W and H must be integers in correct boundaries
+	W = Math.min(Math.max(parseInt(W), 1), window.innerWidth);
+	H = Math.min(Math.max(parseInt(H), 1), window.innerHeight);
 	zoom = truezoom*W;
 
 	canvas = document.createElement("canvas");
@@ -65,7 +73,6 @@ function updatePrecision() {
 
 	document.body.appendChild(canvas);
 	canvas = canvas.getContext("2d");
-
 }
 
 function updateF4() {
@@ -190,12 +197,8 @@ function apply() {
 	trueN = N = parseInt(infoElem.iter.value);
 
 	// set up precision depending on set resolution
-	let w = parseInt(infoElem.w.value);
-	let h = parseInt(infoElem.h.value);
-	precision = Math.max(parseInt((window.innerWidth/w + window.innerHeight/h) / 2), 1);
-	if (isNaN(precision)) {
-		precision = 100;
-	}
+	W = parseInt(infoElem.w.value);
+	H = parseInt(infoElem.h.value);
 
 	draw();
 }
@@ -236,14 +239,14 @@ function onpress(e) {
 		N = parseInt(trueN);
 		redraw = true;
 	} else if (e.key == "+") {
-		if (precision > 1) {
-			precision -= 1;
-		}
-		updatePrecision();
+		W *= 1.3;
+		H *= 1.3;
+		updateResolution();
 		redraw = true;
 	} else if (e.key == "-") {
-		precision += 1;
-		updatePrecision();
+		W /= 1.3;
+		H /= 1.3;
+		updateResolution();
 		redraw = true;
 	} else if (e.key == "a") {
 		if (antialias == 8) {
@@ -267,8 +270,8 @@ function onpress(e) {
 }
 
 let canvas, divF4, infoElem;
-let W, H;
-let precision = 2; // pixels
+let W = window.innerWidth/2;
+let H = window.innerHeight/2;
 let redraw = true;
 let F4 = true;
 let antialias = 1;
